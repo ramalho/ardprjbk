@@ -1,9 +1,11 @@
+#!/usr/bin/env python
 # coding: utf-8
 
 """
-Crop (dimensões)
-p094    2910    3783
+Script descartável para processar scans de um livro.
 
+Linhas comentadas na função ``main`` invocam funções que
+foram usadas em diferentes momentos do processamento.
 """
 
 import shutil
@@ -15,6 +17,7 @@ from PIL import Image
 
 #PATH = 'testes/'
 PATH = 'scans/'
+PATH_THUMBS = 'thumbs/'
 PADRAO_PAGINA = re.compile(r'p\d\d\d\.png')
 SUFIXO_VERSAO = re.compile(r'.*-(\d+)')
 DIM_ORIG = (4091, 2962)
@@ -31,8 +34,9 @@ AREAS_AMOSTRAS = [
     (1950,  200, 2000, 1400),
     (1950, 1500, 2000, 2700),
 ]
-DIM_1000 = (1006, 768)
-DIM_300 =   (314, 240)
+DIM_THUMBS = {'1000'  : (1006, 768),
+              '300' : (314, 240)}
+
 
 def extrair_num_copia(nome_orig):
     """
@@ -96,6 +100,15 @@ def media_rgb(amostra):
 def mediana(amostra):
     return sorted(amostra)[len(amostra)/2]
 
+def reduzir(nome_img, nome_dim):
+    with open(nome_img) as entrada:
+        im = Image.open(entrada)
+        im_thumb = im.copy()
+    nome_arq = os.path.split(nome_img)[-1]
+    with open(os.path.join(PATH_THUMBS, nome_dim, nome_arq), 'wb') as saida:
+        im_thumb.thumbnail(DIM_THUMBS[nome_dim], Image.ANTIALIAS)
+        im_thumb.save(saida)
+
 def retocar_margens_internas(nome_img):
     with open(nome_img) as entrada:
         im = Image.open(entrada)
@@ -134,7 +147,9 @@ def main():
                 #backup(path_img)
                 #rotacionar(path_img)
                 #cortar(path_img)
-                retocar_margens_internas(path_img)
+                #retocar_margens_internas(path_img)
+                for dim in DIM_THUMBS:
+                    reduzir(path_img, dim)
                 print '%0.3fs %s' % (time.time()-t0, path_img)
 
 if __name__=='__main__':
