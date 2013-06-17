@@ -26,7 +26,7 @@ BODY_IDX = """
 <h1>Arduino Projects Book</h1>
 
 <p>Creative Commons Attribution-NonCommercial-ShareAlike 3.0 License by Arduino LLC
-(<a href="scans/front/p002.png">license page</a>)</p>
+(<a href="pages/p002.html">license page</a>)</p>
 
 {table}
 """
